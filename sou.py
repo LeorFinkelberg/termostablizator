@@ -24,7 +24,8 @@ from typing import NoReturn, Any
         
 
 def header() -> NoReturn:
-    st.header('Приложение для расчета коэффициента теплопередачи от грунта к СОУ')
+    st.header('Приложение для расчета коэффициента теплопередачи от грунта '
+              'к сезонно-охлаждающим устройствам')
     st.markdown('Расчет выполняется в соответствии с _Приложением Б_ "Алгоритм постановки '
                 'граничных условий при прогнозе температурного режима грунтов '
                 'численными методами" _СТО Газпром 2-2.1-390-2009_ "Руководство по'
@@ -69,7 +70,7 @@ def E_compute(
     if item == 1:
         return np.tanh(inner_expr)/inner_expr
     else:
-        return 0.96
+        return 0.98*np.tanh(inner_expr)/inner_expr
         # ub = inner_expr/(dp_rib/d_rib -1)
         # ue = ub*dp_rib/d_rib
         # beta = i1(ue)/k1(ue)    
@@ -93,36 +94,36 @@ def compute_heat_transfer_coef():
     к СОУ, отнесенный к площади поверхности испарителя
     '''  
     st.sidebar.header('Входные параметры')
-    st.sidebar.subheader('Геометрические характеристики')
+    st.sidebar.subheader('Геометрические параметры')
     Eitems = ('Прямые ребра постоянной толщины',
               'Круглые поперечные ребра постоянной толщины')
     Eitem = items_for_E(Eitems)  # вариант формы ребер
     # ------------------------------------------------------------------------
     rib_wall_thickness = st.sidebar.number_input(
         'Толщина стенки ребра, м', value=0.0005, min_value=0.0001,
-        max_value=0.1, format='%f')
+        max_value=0.1, step=0.0001, format='%g')
     dp_rib = st.sidebar.number_input(
         'Наружный диаметр круглого ребера, м', value=0.070, min_value=0.050,
-        max_value=2.0, format='%f')
+        max_value=2.0, step=0.001,format='%f')
     d_rib = st.sidebar.number_input(
         'Наружный диаметр трубы конденсатора, м', value=0.038, min_value=0.010,
-        max_value=0.080, format='%f')
+        max_value=0.080, step=0.001, format='%f')
     L_isp = st.sidebar.number_input(
-        'Длина испарительной части, м', value=11.0, min_value=6.0,
-        max_value=23.0, format='%f')
+        'Длина испарительной части, м', value=16.2, min_value=6.0,
+        max_value=23.0, step=0.001, format='%f')
     L_cond = st.sidebar.number_input(
-        'Длина конденсаторной части, м', value=2.5, min_value=0.5,
-        max_value=10.0, format='%f')
+        'Длина конденсаторной части, м', value=1.8, min_value=0.5,
+        max_value=10.0, step=0.001, format='%f')
     L_spiral = st.sidebar.number_input(
-        'Длина оребренной части, м', value=1.5, min_value=0.200,
-        max_value=5.0, format='%f')
+        'Длина оребренной части, м', value=1.44, min_value=0.200,
+        max_value=5.0, step=0.001, format='%f')
     step_spiral = st.sidebar.number_input(
         'Расстояние между ребрами, м', value=0.003, min_value=0.0005,
-        max_value=5.0, format='%f')
+        max_value=5.0, step=0.001, format='%f')
     st.sidebar.subheader('Прочие параметры')
     lambda_rib = st.sidebar.number_input(
         'Теплопроводность матер-ла оребрения, Вт/(м К)', value=210.0,
-        min_value=8.0, max_value=1000.0, format='%f')
+        min_value=8.0, max_value=1000.0, step=0.01, format='%f')
     wind_speed = st.sidebar.selectbox('Скорость ветра, м', (1, 3))
     
     # Коэффициент теплоотдачи от гладкостенной трубы конденсатора
