@@ -149,10 +149,11 @@ def compute_heat_transfer_coef():
     
     if st.button('Расчитать...'):   
         annotation_for_E(Eitem)
+        annotation_css('Коэффициент теплопередачи от грунта к СОУ, Вт/(м^2 К)', size=15)
         if ( (K_isp > 14.5 and wind_speed == 1) or (K_isp > 21 and wind_speed == 3) ):
-            annotation_css('Коэффициент теплопередачи от грунта к СОУ, Вт/(м^2 К)', size=15)
             Ki_latex(K_isp)
         else:
+            Ki_latex(K_isp)
             st.error('Согласно п. 1.2.3 ТУ Коэффициент теплоотдачи от грунта '
                      'к СОУ при скорости ветра 1 м/с должен быть '
                      'не менее 14,5 Вт/(м^2 К)')
