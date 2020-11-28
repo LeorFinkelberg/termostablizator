@@ -10,40 +10,33 @@
 '''
 
 import streamlit as st
+from streamlit.components import v1
 import numpy as np
-import time
 import math
+from pandas import DataFrame, Series
 #from scipy.special import (i1, i0, k0, k1)
 from typing import NoReturn, Any
+from css import header_css, subheader_css, annotation_css
 
-
-# uploaded_file = st.file_uploader('Choose a file')
-# if uploaded_file is not None:
-#     bytes_data = uploaded_file.read()
-#     st.write(bytes_data)
-        
 
 def header() -> NoReturn:
-    st.header('Приложение для расчета коэффициента теплопередачи от грунта '
-              'к сезонно-охлаждающим устройствам')
-    st.markdown('Расчет выполняется в соответствии с _Приложением Б_ "Алгоритм постановки '
-                'граничных условий при прогнозе температурного режима грунтов '
-                'численными методами" _СТО Газпром 2-2.1-390-2009_ "Руководство по'
-                'проектированию и применению сезонно-охлаждающих устройств для'
-                'термостабилизаторов грунтов оснований фундаментов"')
+    st.set_page_config(page_title='Приложение для расчета коэффициента теплопередачи от грунта к СОУ')
+    header_css(
+        'Приложение<br>для расчета коэффициента теплопередачи от грунта'
+        '<br>к сезонно-охлаждающим устройствам')
+    
+    subheader_css(
+        'Расчет выполняется в соответствии с <i>Приложением Б</i> '
+        '"Алгоритм постановки граничных условий при прогнозе температурного '
+        'режима грунтов численными методами" документа '
+        '<i>СТО Газпром 2-2.1-390-2009</i> '
+        '"Руководство по проектированию и применению сезонно-охлаждающих '
+        'устройств для термостабилизаторов грунтов оснований фундаментов"')
 
 
 def E_latex_dir_rib(res):
     st.latex(r'E = \dfrac{\tanh(x)}{x},\ x = h\sqrt{\dfrac{2 \alpha}{\lambda\, \delta}} \to E='
              + f'{res:10.3f}')
-    
-    
-# def E_latex_circle_rib(res):
-#     st.write('Коэффициент эффективности оребрения')
-#     st.latex(r'E = \dfrac{2}{u_b\bigg( 1 - \dfrac{u_c}{u_b} \bigg)^2} \Biggl[ \dfrac{I_1(u_b) - \beta K_1(u_b)}{I_0(u_b) +'
-#             r'\beta K_0(u_b)} \Biggr],\ \beta = \dfrac{I_1(u_e)}{K_1(u_e)},\ u_e = u_b \bigg( \dfrac{d_p}{d} \bigg),')
-#     st.latex(r'u_b = {h\sqrt{\dfrac{2 \alpha}{\lambda \delta}}}\biggl(\dfrac{d_p}{d} - 1\biggr)^{-1} \to E=' +
-#               f'\n{res:10.3f}')
 
 
 def alpha0_latex(alpha0):
@@ -81,11 +74,18 @@ def items_for_E(items):
     Eflag = st.sidebar.radio('Коэффициент эффективности оребрения', items)
 
     if Eflag == items[0]:
-        st.markdown('_Расчет проводится для случая прямых ребер постоянной толщины_')
         return 1
     else:
-        st.markdown('_Расчет проводится для случая круглых поперечных ребер постоянной толщины_')
         return 2
+
+
+def annotation_for_E(item):
+    if item == 1:
+        annotation_css('Расчет проводится для случая прямых ребер '
+                       'постоянной толщины')
+    else:
+        annotation_css('Расчет проводится для случая круглых поперечных ребер '
+                       'постоянной толщины')
 
 
 def compute_heat_transfer_coef():
@@ -147,20 +147,15 @@ def compute_heat_transfer_coef():
     # Коэффициент теплопередачи от грунта к СОУ, отнесенный к площади поверхности испарителя
     K_isp = alpha_pr*Fpc/F_isp
     
-    if st.button('Расчет'):
-        # if Eitem == 1:
-        #     E_latex_dir_rib(E)
-        # else:
-        #     E_latex_circle_rib(E)
-        # st.write('Коэффициент теплоотдачи от гладкостенной трубы кондесатора к окружающему воздуху, Вт/(м^2 К)')
-        # alpha0_latex(alpha0)
-        
-        if (K_isp > 14.5 and wind_speed == 1) or (K_isp > 21 and wind_speed == 3):
-            st.write('Коэффициент теплопередачи от грунта к СОУ, Вт/(м^2 К)')
+    if st.button('Расчитать...'):   
+        annotation_for_E(Eitem)
+        if ( (K_isp > 14.5 and wind_speed == 1) or (K_isp > 21 and wind_speed == 3) ):
+            annotation_css('Коэффициент теплопередачи от грунта к СОУ, Вт/(м^2 К)', size=15)
             Ki_latex(K_isp)
-            #st.success(f'Коэффициент теплопередачи от грунта к СОУ: {K_isp:10.3f}')
         else:
-            st.error('Согласно п. 1.2.3 ТУ Коэффициент теплоотдачи от грунта к СОУ при скорости ветра 1 м/с должен быть не менее 14,5 Вт/(м^2 К)')
+            st.error('Согласно п. 1.2.3 ТУ Коэффициент теплоотдачи от грунта '
+                     'к СОУ при скорости ветра 1 м/с должен быть '
+                     'не менее 14,5 Вт/(м^2 К)')
         
 
 if __name__ == '__main__':
