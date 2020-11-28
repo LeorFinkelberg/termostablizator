@@ -71,7 +71,7 @@ def E_compute(
 
 
 def items_for_E(items):
-    Eflag = st.sidebar.radio('Коэффициент эффективности оребрения', items)
+    Eflag = st.sidebar.radio('К вычислению коэффициента эффективности оребрения', items)
 
     if Eflag == items[0]:
         return 1
