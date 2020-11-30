@@ -25,4 +25,9 @@ def annotation_css(text: str = '', clr: str = 'black', size: int = 15):
     st.markdown(f"<h2 style='font-family: Helvetica, sans-serif;"
                 f'line-height: 1.2; text-align: justify; font-size: {size}px;'
                 f"color: {clr}'><i>{text}</i>", unsafe_allow_html=True)
-    
+
+
+def annotation_normal_css(text: str = '', clr: str = 'black', size: int = 15):
+    st.markdown(f"<h2 style='font-family: Helvetica, sans-serif;"
+                f'line-height: 1.2; text-align: justify; font-size: {size}px;'
+                f"color: {clr}'>{text}", unsafe_allow_html=True)

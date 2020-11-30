@@ -10,13 +10,12 @@
 '''
 
 import streamlit as st
-from streamlit.components import v1
 import numpy as np
 import math
-from pandas import DataFrame, Series
 #from scipy.special import (i1, i0, k0, k1)
-from typing import NoReturn, Any
-from css import header_css, subheader_css, annotation_css
+from typing import NoReturn
+from css import (header_css, subheader_css,
+                 annotation_css, annotation_normal_css)
 
 
 def header() -> NoReturn:
@@ -43,8 +42,20 @@ def alpha0_latex(alpha0):
     st.latex(r'\alpha_0 = 4.606\, \dfrac{w^{0.6}}{d^{0.4}} \to \alpha_0=' + f'{alpha0:5.3f}')
     
     
-def Ki_latex(K_isp):
-    st.latex(r'K_i = 4.606 \cdot \dfrac{w^{0.6}(E \cdot F_p + F_c)}{d^{0.4} \cdot F_i}=' + f'{K_isp:10.3f}')
+def Ki_latex(K_isp: float, w: float, E: float, Fp: float, Fc: float, d: float, Fi: float):
+    st.latex(r'K_i = 4.606 \cdot \dfrac{w^{0.6}(E \cdot F_p + F_c)}{d\,{}^{0.4} \cdot F_i}=' + f'{K_isp:10.3f}')
+    annotation_css('Скорость ветра, [м]')
+    st.latex(f'w = {w:.2f}')
+    annotation_css('Коэффициент эффективности оребрения')
+    st.latex(f'E = {E:.3f}')
+    annotation_css('Площадь поверхности ребер, [м^2]')
+    st.latex(r'F_p =' + f'{Fp:.3f}')
+    annotation_css('Площадь поверхности неоребренной части конденсатора, [м^2]')
+    st.latex(r'F_c =' + f'{Fc:.3f}')
+    annotation_css('Наружный диаметр трубы конденсатора, [м]')
+    st.latex(r'd =' + f'{d:.3f}')
+    annotation_css('Площадь поверхности испарителя, [м^2]')
+    st.latex(r'F_i =' + f'{Fi:.3f}')
 
 
 def E_compute(
@@ -82,10 +93,10 @@ def items_for_E(items):
 def annotation_for_E(item):
     if item == 1:
         annotation_css('Расчет проводится для случая прямых ребер '
-                       'постоянной толщины')
+                       'постоянной толщины.')
     else:
         annotation_css('Расчет проводится для случая круглых поперечных ребер '
-                       'постоянной толщины')
+                       'постоянной толщины.')
 
 
 def compute_heat_transfer_coef():
@@ -148,12 +159,13 @@ def compute_heat_transfer_coef():
     K_isp = alpha_pr*Fpc/F_isp
     
     if st.button('Расчитать...'):   
+        annotation_normal_css('Сводка')
         annotation_for_E(Eitem)
-        annotation_css('Коэффициент теплопередачи от грунта к СОУ, Вт/(м^2 К)', size=15)
+        annotation_css('Коэффициент теплопередачи от грунта к СОУ, [Вт/(м^2 К)]', size=15)
         if ( (K_isp > 14.5 and wind_speed == 1) or (K_isp > 21 and wind_speed == 3) ):
-            Ki_latex(K_isp)
+            Ki_latex(K_isp, wind_speed, E, F_rib, F_nonrib, d_rib, F_isp)
         else:
-            Ki_latex(K_isp)
+            Ki_latex(K_isp, wind_speed, E, F_rib, F_nonrib, d_rib, F_isp)
             st.error('Согласно п. 1.2.3 ТУ Коэффициент теплоотдачи от грунта '
                      'к СОУ при скорости ветра 1 м/с должен быть '
                      'не менее 14,5 Вт/(м^2 К)')
