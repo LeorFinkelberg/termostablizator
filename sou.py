@@ -120,7 +120,7 @@ def compute_heat_transfer_coef():
         'Наружный диаметр трубы конденсатора, м', value=0.038, min_value=0.010,
         max_value=0.080, step=0.001, format='%f')
     L_isp = st.sidebar.number_input(
-        'Длина испарительной части, м', value=16.2, min_value=6.0,
+        'Длина испарительной части, м', value=16.2, min_value=0.0,
         max_value=30.0, step=0.001, format='%f')
     L_cond = st.sidebar.number_input(
         'Длина конденсаторной части, м', value=1.8, min_value=0.5,
