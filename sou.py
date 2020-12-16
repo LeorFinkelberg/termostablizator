@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 25.11.2020 21:31:32
 ---------------------------------------------------------
 Расчет коэффициента теплопередачи от грунта к СОУ
@@ -7,32 +7,37 @@
 СТО Газпром 2-2.1-390-2009 "Руководство по проектированию
 и применению сезонно-охлаждающих устройств для
 термостабилизации грунтов оснований фундаментов"
-'''
+"""
 
 import streamlit as st
 import numpy as np
 import math
+
 # from scipy.special import (i1, i0, k0, k1)
 from typing import NoReturn
-from css import (header_css, subheader_css,
-                 annotation_css, annotation_normal_css)
+from css import (
+    header_css,
+    subheader_css,
+    annotation_css,
+    annotation_normal_css,
+)
 
 
 def header() -> NoReturn:
     st.set_page_config(
-        page_title='Приложение для расчета коэффициента'
-        'теплопередачи от грунта к СОУ'
+        page_title="Приложение для расчета коэффициента"
+        "теплопередачи от грунта к СОУ"
     )
     header_css(
-        'Приложение<br>для расчета коэффициента теплопередачи от грунта'
-        '<br>к сезонно-охлаждающим устройствам'
+        "Приложение<br>для расчета коэффициента теплопередачи от грунта"
+        "<br>к сезонно-охлаждающим устройствам"
     )
 
     subheader_css(
-        'Расчет выполняется в соответствии с <i>Приложением Б</i> '
+        "Расчет выполняется в соответствии с <i>Приложением Б</i> "
         '"Алгоритм постановки граничных условий при прогнозе температурного '
         'режима грунтов численными методами" документа '
-        '<i>СТО Газпром 2-2.1-390-2009</i> '
+        "<i>СТО Газпром 2-2.1-390-2009</i> "
         '"Руководство по проектированию и применению сезонно-охлаждающих '
         'устройств для термостабилизаторов грунтов оснований фундаментов"'
     )
@@ -40,47 +45,39 @@ def header() -> NoReturn:
 
 def E_latex_dir_rib(res):
     st.latex(
-        r'E = \dfrac{\tanh(x)}{x},\ x ='
-        r'h\sqrt{\dfrac{2 \alpha}{\lambda\, \delta}} \to E='
-        + f'{res:10.3f}'
+        r"E = \dfrac{\tanh(x)}{x},\ x ="
+        r"h\sqrt{\dfrac{2 \alpha}{\lambda\, \delta}} \to E=" + f"{res:10.3f}"
     )
 
 
 def alpha0_latex(alpha0):
     st.latex(
-        r'\alpha_0 = 4.606\, \dfrac{w^{0.6}}{d^{0.4}} \to \alpha_0='
-        + f'{alpha0:5.3f}'
+        r"\alpha_0 = 4.606\, \dfrac{w^{0.6}}{d^{0.4}} \to \alpha_0="
+        + f"{alpha0:5.3f}"
     )
 
 
 def Ki_latex(
-    K_isp: float,
-    w: float,
-    E: float,
-    Fp: float,
-    Fc: float,
-    d: float,
-    Fi: float
+    K_isp: float, w: float, E: float, Fp: float, Fc: float, d: float, Fi: float
 ):
     st.latex(
-        r'K_i = 4.606 \cdot \dfrac{w^{0.6}(E \cdot F_p'
-        r'+ F_c)}{d\,{}^{0.4} \cdot F_i}='
-        + f'{K_isp:10.3f}'
+        r"K_i = 4.606 \cdot \dfrac{w^{0.6}(E \cdot F_p"
+        r"+ F_c)}{d\,{}^{0.4} \cdot F_i}=" + f"{K_isp:10.3f}"
     )
-    annotation_css('Скорость ветра, [м]')
-    st.latex(f'w = {w:.2f}')
-    annotation_css('Коэффициент эффективности оребрения')
-    st.latex(f'E = {E:.3f}')
-    annotation_css('Площадь поверхности ребер, [м^2]')
-    st.latex(r'F_p =' + f'{Fp:.3f}')
+    annotation_css("Скорость ветра, [м]")
+    st.latex(f"w = {w:.2f}")
+    annotation_css("Коэффициент эффективности оребрения")
+    st.latex(f"E = {E:.3f}")
+    annotation_css("Площадь поверхности ребер, [м^2]")
+    st.latex(r"F_p =" + f"{Fp:.3f}")
     annotation_css(
-        'Площадь поверхности неоребренной части конденсатора, [м^2]'
+        "Площадь поверхности неоребренной части конденсатора, [м^2]"
     )
-    st.latex(r'F_c =' + f'{Fc:.3f}')
-    annotation_css('Наружный диаметр трубы конденсатора, [м]')
-    st.latex(r'd =' + f'{d:.3f}')
-    annotation_css('Площадь поверхности испарителя, [м^2]')
-    st.latex(r'F_i =' + f'{Fi:.3f}')
+    st.latex(r"F_c =" + f"{Fc:.3f}")
+    annotation_css("Наружный диаметр трубы конденсатора, [м]")
+    st.latex(r"d =" + f"{d:.3f}")
+    annotation_css("Площадь поверхности испарителя, [м^2]")
+    st.latex(r"F_i =" + f"{Fi:.3f}")
 
 
 def E_compute(
@@ -90,16 +87,18 @@ def E_compute(
     lambda_rib: float,
     rib_wall_thickness: float,
     dp_rib: float,
-    d_rib: float
+    d_rib: float,
 ) -> float:
-    '''
+    """
     Вычисляет коэффициент оребрения
-    '''
-    inner_expr = rib_hight*np.sqrt(2*alpha_v/(lambda_rib*rib_wall_thickness))
+    """
+    inner_expr = rib_hight * np.sqrt(
+        2 * alpha_v / (lambda_rib * rib_wall_thickness)
+    )
     if item == 1:
-        return np.tanh(inner_expr)/inner_expr
+        return np.tanh(inner_expr) / inner_expr
     else:
-        return 0.98*np.tanh(inner_expr)/inner_expr
+        return 0.98 * np.tanh(inner_expr) / inner_expr
         # ub = inner_expr/(dp_rib/d_rib -1)
         # ue = ub*dp_rib/d_rib
         # beta = i1(ue)/k1(ue)
@@ -110,7 +109,7 @@ def E_compute(
 
 def items_for_E(items):
     Eflag = st.sidebar.radio(
-        'К вычислению коэффициента эффективности оребрения', items
+        "К вычислению коэффициента эффективности оребрения", items
     )
 
     if Eflag == items[0]:
@@ -121,90 +120,144 @@ def items_for_E(items):
 
 def annotation_for_E(item):
     if item == 1:
-        annotation_css('Расчет проводится для случая прямых ребер '
-                       'постоянной толщины.')
+        annotation_css(
+            "Расчет проводится для случая прямых ребер " "постоянной толщины."
+        )
     else:
-        annotation_css('Расчет проводится для случая круглых поперечных ребер '
-                       'постоянной толщины.')
+        annotation_css(
+            "Расчет проводится для случая круглых поперечных ребер "
+            "постоянной толщины."
+        )
 
 
 def compute_heat_transfer_coef():
-    '''
+    """
     Вычисляет коэффициент теплопередачи от грунта
     к СОУ, отнесенный к площади поверхности испарителя
-    '''
-    st.sidebar.header('Входные параметры')
-    st.sidebar.subheader('Геометрические параметры')
-    Eitems = ('Прямые ребра постоянной толщины',
-              'Круглые поперечные ребра постоянной толщины')
+    """
+    st.sidebar.header("Входные параметры")
+    st.sidebar.subheader("Геометрические параметры")
+    Eitems = (
+        "Прямые ребра постоянной толщины",
+        "Круглые поперечные ребра постоянной толщины",
+    )
     Eitem = items_for_E(Eitems)  # вариант формы ребер
     # ------------------------------------------------------------------------
     rib_wall_thickness = st.sidebar.number_input(
-        'Толщина стенки ребра, м', value=0.0005, min_value=0.0001,
-        max_value=0.1, step=0.0001, format='%g')
+        "Толщина стенки ребра, м",
+        value=0.0005,
+        min_value=0.0001,
+        max_value=0.1,
+        step=0.0001,
+        format="%g",
+    )
     dp_rib = st.sidebar.number_input(
-        'Наружный диаметр круглого ребера, м', value=0.070, min_value=0.050,
-        max_value=2.0, step=0.001, format='%f')
+        "Наружный диаметр круглого ребера, м",
+        value=0.070,
+        min_value=0.050,
+        max_value=2.0,
+        step=0.001,
+        format="%f",
+    )
     d_rib = st.sidebar.number_input(
-        'Наружный диаметр трубы конденсатора, м', value=0.038, min_value=0.010,
-        max_value=0.080, step=0.001, format='%f')
+        "Наружный диаметр трубы конденсатора, м",
+        value=0.038,
+        min_value=0.010,
+        max_value=0.080,
+        step=0.001,
+        format="%f",
+    )
     L_isp = st.sidebar.number_input(
-        'Длина испарительной части, м', value=16.2, min_value=0.0,
-        max_value=30.0, step=0.001, format='%f')
+        "Длина испарительной части, м",
+        value=16.2,
+        min_value=0.0,
+        max_value=30.0,
+        step=0.001,
+        format="%f",
+    )
     L_cond = st.sidebar.number_input(
-        'Длина конденсаторной части, м', value=1.8, min_value=0.5,
-        max_value=10.0, step=0.001, format='%f')
+        "Длина конденсаторной части, м",
+        value=1.8,
+        min_value=0.5,
+        max_value=10.0,
+        step=0.001,
+        format="%f",
+    )
     L_spiral = st.sidebar.number_input(
-        'Длина оребренной части, м', value=1.44, min_value=0.200,
-        max_value=5.0, step=0.001, format='%f')
+        "Длина оребренной части, м",
+        value=1.44,
+        min_value=0.200,
+        max_value=5.0,
+        step=0.001,
+        format="%f",
+    )
     step_spiral = st.sidebar.number_input(
-        'Расстояние между ребрами, м', value=0.003, min_value=0.0005,
-        max_value=5.0, step=0.001, format='%f')
-    st.sidebar.subheader('Прочие параметры')
+        "Расстояние между ребрами, м",
+        value=0.003,
+        min_value=0.0005,
+        max_value=5.0,
+        step=0.001,
+        format="%f",
+    )
+    st.sidebar.subheader("Прочие параметры")
     lambda_rib = st.sidebar.number_input(
-        'Теплопроводность матер-ла оребрения, Вт/(м К)', value=210.0,
-        min_value=8.0, max_value=1000.0, step=0.01, format='%f')
-    wind_speed = st.sidebar.selectbox('Скорость ветра, м', (1, 3))
+        "Теплопроводность матер-ла оребрения, Вт/(м К)",
+        value=210.0,
+        min_value=8.0,
+        max_value=1000.0,
+        step=0.01,
+        format="%f",
+    )
+    wind_speed = st.sidebar.selectbox("Скорость ветра, м", (1, 3))
 
     # Коэффициент теплоотдачи от гладкостенной трубы конденсатора
     # к окружающему воздуху, Вт/(м^2 K)
-    alpha0 = 4.606*wind_speed**0.6/d_rib**0.4
+    alpha0 = 4.606 * wind_speed ** 0.6 / d_rib ** 0.4
     # Площаль поверхности неоребренной части конденсатора
-    F_nonrib = math.pi*d_rib*L_cond
+    F_nonrib = math.pi * d_rib * L_cond
     # Площадь поверхности ребер
-    F_rib = 2*(math.pi*dp_rib**2/4 - math.pi*d_rib**2/4)*L_spiral/step_spiral
+    F_rib = (
+        2
+        * (math.pi * dp_rib ** 2 / 4 - math.pi * d_rib ** 2 / 4)
+        * L_spiral
+        / step_spiral
+    )
     # Площадь поверхности испарительной части
-    F_isp = math.pi*d_rib*L_isp
+    F_isp = math.pi * d_rib * L_isp
     # Площадь наружной (оребрной) поверхности конденсатора
     Fpc = F_rib + F_nonrib
     # Высота ребер
-    rib_hight = (dp_rib - d_rib)/2
+    rib_hight = (dp_rib - d_rib) / 2
     # Коэффициент эффективности оребрения
-    E = E_compute(Eitem, rib_hight, alpha0,
-                  lambda_rib, rib_wall_thickness, dp_rib, d_rib)
+    E = E_compute(
+        Eitem, rib_hight, alpha0, lambda_rib, rib_wall_thickness, dp_rib, d_rib
+    )
     # Приведнный коэффициент теплоотдачи от стенки конденсатора
     # к окружающему воздуху
-    alpha_pr = alpha0/Fpc*(E*F_rib + F_nonrib)
+    alpha_pr = alpha0 / Fpc * (E * F_rib + F_nonrib)
     # Коэффициент теплопередачи от грунта к СОУ, отнесенный
     # к площади поверхности испарителя
-    K_isp = alpha_pr*Fpc/F_isp
+    K_isp = alpha_pr * Fpc / F_isp
 
-    if st.button('Расчитать...'):
-        annotation_normal_css('Сводка')
+    if st.button("Расчитать..."):
+        annotation_normal_css("Сводка")
         annotation_for_E(Eitem)
         annotation_css(
-            'Коэффициент теплопередачи от грунта к СОУ, [Вт/(м^2 К)]', size=15
+            "Коэффициент теплопередачи от грунта к СОУ, [Вт/(м^2 К)]", size=15
         )
-        if ((K_isp > 14.5 and wind_speed == 1) or
-                (K_isp > 21 and wind_speed == 3)):
+        if (K_isp > 14.5 and wind_speed == 1) or (
+            K_isp > 21 and wind_speed == 3
+        ):
             Ki_latex(K_isp, wind_speed, E, F_rib, F_nonrib, d_rib, F_isp)
         else:
             Ki_latex(K_isp, wind_speed, E, F_rib, F_nonrib, d_rib, F_isp)
-            st.error('Согласно п. 1.2.3 ТУ Коэффициент теплоотдачи от грунта '
-                     'к СОУ при скорости ветра 1 м/с должен быть '
-                     'не менее 14,5 Вт/(м^2 К)')
+            st.error(
+                "Согласно п. 1.2.3 ТУ Коэффициент теплоотдачи от грунта "
+                "к СОУ при скорости ветра 1 м/с должен быть "
+                "не менее 14,5 Вт/(м^2 К)"
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     header()
     compute_heat_transfer_coef()
