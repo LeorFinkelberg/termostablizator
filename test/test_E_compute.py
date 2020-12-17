@@ -21,4 +21,4 @@ def test_E_compute():
         "d_rib": 1,
     }
     E_res = E_compute(**default_values)
-    assert E_res == 0.6281834549054397
+    assert round(E_res, 5) == 0.62818
