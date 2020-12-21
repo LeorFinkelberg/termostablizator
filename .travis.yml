@@ -1,4 +1,4 @@
-# Configuration file for Travis CI
+# Config file for Travis CI
 dist: xenial
 language: python
 python: 3.7.6
@@ -9,7 +9,7 @@ install:
 script:
   - pytest --cov=termostabilizator
 
-after_success:
+after_success: # This is for DeepSource.io
   # Generate coverage report in xml format
   - coverage xml
 
