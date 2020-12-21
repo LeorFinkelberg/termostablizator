@@ -1,3 +1,4 @@
+# Configuration file for Travis CI
 dist: xenial
 language: python
 python: 3.7.6
@@ -7,3 +8,13 @@ install:
 
 script:
   - pytest --cov=termostabilizator
+
+after_success:
+  # Generate coverage report in xml format
+  - coverage xml
+
+  # Install deepsource CLI
+  - curl https://deepsource.io/cli | sh
+
+  # From the root directory, run the report coverage command
+  - ./bin/deepsource report --analyzer test-coverage --key python --value-file ./coverage.xml

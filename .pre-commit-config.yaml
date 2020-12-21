@@ -1,10 +1,10 @@
 exclude: _pb2\.py$
 repos:
-- repo: https://github.com/pre-commit/mirrors-isort
-  rev: f0001b2  # Use the revision sha / tag you want to point at
-  hooks:
-    - id: isort
-      args: ["--profile", "black"]
+#- repo: https://github.com/pre-commit/mirrors-isort
+#  rev: f0001b2  # Use the revision sha / tag you want to point at
+#  hooks:
+#    - id: isort
+#      args: ["--profile", "black"]
 - repo: https://github.com/psf/black
   rev: 20.8b1
   hooks:
@@ -31,14 +31,14 @@ repos:
     - id: trailing-whitespace
     - id: flake8
     - id: requirements-txt-fixer
--   repo: https://github.com/pre-commit/mirrors-pylint
-    rev: d230ffd
-    hooks:
-    -   id: pylint
-        args:
-        - --max-line-length=119
-        - --ignore-imports=yes
-        - -d duplicate-code
+#-   repo: https://github.com/pre-commit/mirrors-pylint
+#    rev: d230ffd
+#    hooks:
+#    -   id: pylint
+#        args:
+#        - --max-line-length=119
+#        - --ignore-imports=yes
+#        - -d duplicate-code
 - repo: https://github.com/asottile/pyupgrade
   rev: v2.7.3
   hooks:
@@ -49,8 +49,8 @@ repos:
   hooks:
   - id: python-check-mock-methods
   - id: python-use-type-annotations
-- repo: https://github.com/pre-commit/mirrors-mypy
-  rev: 9feadeb
-  hooks:
-  - id: mypy
-    args: [--ignore-missing-imports, --warn-no-return, --warn-redundant-casts, --disallow-incomplete-defs]
+#- repo: https://github.com/pre-commit/mirrors-mypy
+#  rev: 9feadeb
+#  hooks:
+#  - id: mypy
+#    args: [--ignore-missing-imports, --warn-no-return, --warn-redundant-casts, --disallow-incomplete-defs]

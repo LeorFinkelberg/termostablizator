@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 25.11.2020 21:31:32
 ---------------------------------------------------------
@@ -9,17 +8,19 @@
 термостабилизации грунтов оснований фундаментов"
 """
 
-import streamlit as st
-import numpy as np
 import math
 
 # from scipy.special import (i1, i0, k0, k1)
 from typing import NoReturn
+
+import numpy as np
+import streamlit as st
+
 from css import (
-    header_css,
-    subheader_css,
     annotation_css,
     annotation_normal_css,
+    header_css,
+    subheader_css,
 )
 
 
