@@ -65,7 +65,7 @@ def Ki_latex(
         r"K_i = 4.606 \cdot \dfrac{w^{0.6}(E \cdot F_p"
         r"+ F_c)}{d\,{}^{0.4} \cdot F_i}=" + f"{K_isp:10.3f}"
     )
-    annotation_css("Скорость ветра, [м]")
+    annotation_css("Скорость ветра, [м/c]")
     st.latex(f"w = {w:.2f}")
     annotation_css("Коэффициент эффективности оребрения")
     st.latex(f"E = {E:.3f}")
@@ -209,7 +209,7 @@ def compute_heat_transfer_coef():
         step=0.01,
         format="%f",
     )
-    wind_speed = st.sidebar.selectbox("Скорость ветра, м", (1, 3))
+    wind_speed = st.sidebar.selectbox("Скорость ветра, м/c", (1, 3))
 
     # Коэффициент теплоотдачи от гладкостенной трубы конденсатора
     # к окружающему воздуху, Вт/(м^2 K)
