@@ -7,7 +7,7 @@ install:
   - pip install -e .
 
 script:
-  - pytest --cov=termostabilizator
+  - pytest -v --cov=termostabilizator
 
 after_success: # This is for DeepSource.io
   # Generate coverage report in xml format
